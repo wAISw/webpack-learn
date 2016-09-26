@@ -1,5 +1,8 @@
 'use strict';
 
-module.explort = function (message) {
+export default function (message) {
+    if (NODE_ENV == 'development') {
+        debugger;
+    }
     alert(`Welcome ${message}`);
 };

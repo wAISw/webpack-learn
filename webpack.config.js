@@ -4,10 +4,18 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 
 module.exports = {
-    entry: "./home",
+    context: __dirname + '/frontend',
+    entry: {
+        home: "./home",
+        app: "./app",
+        about: "./about",
+        common: ["./welcome", "./common"]
+    },
     output: {
-        filename: "build.js",
-        library: "home"
+        path: __dirname + '/public',
+        publicPath: '/',
+        filename: "[name].js",
+        library: "[name]"
     },
     watch: NODE_ENV == 'development',
     watchOptions: {
@@ -15,9 +23,14 @@ module.exports = {
     },
     devtool: NODE_ENV == 'development' ? "cheap-inline-module-source-map" : null,
     plugins: [
+        new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             LANG: JSON.stringify('ru')
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            chunks: ['about', 'home']
         })
     ],
     resolve: {

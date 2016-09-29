@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = function () {
-    alert("home");
+    let old = require('old');
+    old();
 };

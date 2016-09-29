@@ -23,6 +23,10 @@ module.exports = {
     },
     devtool: NODE_ENV == 'development' ? "cheap-inline-module-source-map" : null,
     plugins: [
+        new webpack.ProvidePlugin({
+            pluck: 'lodash/map'
+        }),
+        new webpack.ContextReplacementPlugin(/node_modules\/moment\/locale/, /ru|en-gb/),
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
@@ -35,7 +39,11 @@ module.exports = {
     ],
     resolve: {
         modulesDirectories: ['node_modules'],
-        extensions: ['', '.js']
+        extensions: ['', '.js'],
+        root: __dirname + '/vendor',
+        alias: {
+            old: 'old/dist/old'
+        }
     },
     resolveLoader: {
         modulesDirectories: ['node_modules'],
@@ -45,13 +53,17 @@ module.exports = {
     module: {
         loaders: [{
             test: /\.js$/,
-            exclude: /node_modules/,
+            include: __dirname + '/frontend',
             loader: 'babel',
             query: {
                 presets: ['es2015'],
                 plugins: ['transform-runtime']
             }
-        }]
+        }, {
+            test: /old.js$/,
+            loader: "imports?workSettings=>{delay:500}!exports?Work"
+        }],
+        noParse: /\/node_modules\/(angular\/angular|jquery)/
     }
 };
 

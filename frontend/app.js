@@ -19,9 +19,33 @@ document.getElementById('logoutButton').onclick = function () {
 
 let moduleName = location.pathname.slice(1);
 
-let context = require.context('./routes', false, /\.js$/);
+let handler;
+try {
+    handler = require('bundle!./routes/' + moduleName);
+} catch (e) {
+    alert(e);
+}
 
-context.keys().forEach(function (path) {
-    let module = context(path);
-    module();
-});
+if (handler) {
+    handler(function (route) {
+        route();
+    });
+}
+
+
+// moment
+let moment = require('moment');
+
+let today = moment(new Date()).locale('ru');
+
+
+
+let users = [
+    {id: 1, name: 'John'},
+    {id: 2, name: 'Luke'},
+    {id: 3, name: 'Ivan'},
+];
+console.log(pluck(users, 'name'));
+
+
+
